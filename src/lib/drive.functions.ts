@@ -10,15 +10,15 @@ import {
 
 export const loadCrmData = createServerFn({ method: "GET" }).handler(async () => {
   if (!driveConfigured()) {
-    return { connected: false as const, data: null, error: "Google Drive is not connected" };
+    return { connected: false as const, json: null, error: "Google Drive is not connected" };
   }
   try {
     const fileId = await findFileId();
-    if (!fileId) return { connected: true as const, data: null, error: null };
+    if (!fileId) return { connected: true as const, json: null, error: null };
     const data = await readFile(fileId);
-    return { connected: true as const, data, error: null };
+    return { connected: true as const, json: JSON.stringify(data ?? null), error: null };
   } catch (e) {
-    return { connected: false as const, data: null, error: (e as Error).message };
+    return { connected: false as const, json: null, error: (e as Error).message };
   }
 });
 

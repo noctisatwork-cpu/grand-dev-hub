@@ -43,7 +43,13 @@ export function StoreProvider({ children }: { children: React.ReactNode }) {
     setSync("loading");
     load({})
       .then((res) => {
-        if (res.data) setData(normalize(res.data));
+        if (res.json) {
+          try {
+            setData(normalize(JSON.parse(res.json)));
+          } catch {
+            /* ignore */
+          }
+        }
         if (!res.connected) {
           setSync("offline");
           setSyncMessage(res.error ?? "Working locally");

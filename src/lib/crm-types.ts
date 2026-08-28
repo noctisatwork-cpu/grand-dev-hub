@@ -62,7 +62,7 @@ export interface Lead {
   notes: string;
   dateAdded: string;
   lastContacted: string;
-  contentId?: string;
+  contentId?: string | undefined;
 }
 
 export interface ProgressNote {
@@ -73,7 +73,7 @@ export interface ProgressNote {
 
 export interface Client {
   id: string;
-  leadId?: string;
+  leadId?: string | undefined;
   name: string;
   business: string;
   program: Program;
@@ -90,8 +90,8 @@ export interface Task {
   title: string;
   dueDate: string;
   done: boolean;
-  linkedId?: string;
-  linkedLabel?: string;
+  linkedId?: string | undefined;
+  linkedLabel?: string | undefined;
 }
 
 export interface ContentEntry {
