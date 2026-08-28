@@ -39,7 +39,7 @@ export const Route = createFileRoute("/")({
       { property: "og:description", content: "Funnel, sources, revenue and follow-ups for Foundrix." },
     ],
   }),
-  component: Dashboard;
+  component: Dashboard,
 });
 
 function TaskPanel() {
