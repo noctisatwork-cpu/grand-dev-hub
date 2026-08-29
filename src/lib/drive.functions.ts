@@ -34,3 +34,15 @@ export const saveCrmData = createServerFn({ method: "POST" })
     const created = await createFile(data.json);
     return { fileId: created, savedAt: new Date().toISOString() };
   });
+
+export const driveAccount = createServerFn({ method: "GET" }).handler(async () => {
+  if (!driveConfigured()) {
+    return { connected: false as const, email: null, name: null, usedGb: null, error: "Google Drive is not connected" };
+  }
+  try {
+    const info = await accountInfo();
+    return { connected: true as const, ...info, error: null };
+  } catch (e) {
+    return { connected: false as const, email: null, name: null, usedGb: null, error: (e as Error).message };
+  }
+});
