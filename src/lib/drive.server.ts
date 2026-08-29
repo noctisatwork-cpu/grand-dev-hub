@@ -76,3 +76,22 @@ export async function updateFile(fileId: string, content: string) {
     "update",
   );
 }
+
+export async function accountInfo(): Promise<{ email: string | null; name: string | null; usedGb: number | null }> {
+  const res = await ok(
+    await fetch(`${GATEWAY}/drive/v3/about?fields=user(displayName,emailAddress),storageQuota(usage)`, {
+      headers: headers(),
+    }),
+    "about",
+  );
+  const json = (await res.json()) as {
+    user?: { displayName?: string; emailAddress?: string };
+    storageQuota?: { usage?: string };
+  };
+  const usage = json.storageQuota?.usage ? Number(json.storageQuota.usage) : null;
+  return {
+    email: json.user?.emailAddress ?? null,
+    name: json.user?.displayName ?? null,
+    usedGb: usage === null || Number.isNaN(usage) ? null : Math.round((usage / 1024 ** 3) * 100) / 100,
+  };
+}
