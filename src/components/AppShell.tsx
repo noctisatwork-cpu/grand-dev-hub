@@ -11,6 +11,7 @@ import {
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { useStore } from "@/lib/store";
+import { AssistantBot } from "./AssistantBot";
 
 const NAV = [
   { to: "/", label: "Dashboard", icon: LayoutDashboard },
@@ -105,6 +106,7 @@ export function AppShell({
 
         <main className="flex-1 px-6 py-6">{children}</main>
       </div>
+      <AssistantBot />
     </div>
   );
 }
