@@ -39,19 +39,19 @@ const num = (v: unknown, fb: number) => (typeof v === "number" && !Number.isNaN(
 const date = (v: unknown) => (/^\d{4}-\d{2}-\d{2}$/.test(String(v)) ? String(v) : today());
 
 function applyAction(d: CrmData, a: Action): { data: CrmData; label: string | null } {
-  switch (a.type) {
+  switch (a["type"]) {
     case "add_lead": {
       const lead: Lead = {
         id: uid(),
-        name: str(a.name) || "Untitled",
-        business: str(a.business),
-        businessType: pick<BusinessType>(BUSINESS_TYPES, a.businessType, "Agency"),
-        email: str(a.email),
-        phone: str(a.phone),
-        handle: str(a.handle),
-        source: pick<Source>(SOURCES, a.source, "Other"),
-        status: pick<Status>(STATUSES, a.status, "New Lead"),
-        notes: str(a.notes),
+        name: str(a["name"]) || "Untitled",
+        business: str(a["business"]),
+        businessType: pick<BusinessType>(BUSINESS_TYPES, a["businessType"], "Agency"),
+        email: str(a["email"]),
+        phone: str(a["phone"]),
+        handle: str(a["handle"]),
+        source: pick<Source>(SOURCES, a["source"], "Other"),
+        status: pick<Status>(STATUSES, a["status"], "New Lead"),
+        notes: str(a["notes"]),
         dateAdded: today(),
         lastContacted: "",
       };
@@ -60,14 +60,14 @@ function applyAction(d: CrmData, a: Action): { data: CrmData; label: string | nu
     case "add_client": {
       const client: Client = {
         id: uid(),
-        name: str(a.name) || "Untitled",
-        business: str(a.business),
-        program: pick<Program>(PROGRAMS, a.program, "The Grand Standard"),
-        startDate: date(a.startDate),
-        months: num(a.months, 3),
-        paymentStatus: pick<PaymentStatus>(PAYMENT_STATUSES, a.paymentStatus, "Pending"),
-        amount: num(a.amount, 25000),
-        guaranteeActive: a.guaranteeActive !== false,
+        name: str(a["name"]) || "Untitled",
+        business: str(a["business"]),
+        program: pick<Program>(PROGRAMS, a["program"], "The Grand Standard"),
+        startDate: date(a["startDate"]),
+        months: num(a["months"], 3),
+        paymentStatus: pick<PaymentStatus>(PAYMENT_STATUSES, a["paymentStatus"], "Pending"),
+        amount: num(a["amount"], 25000),
+        guaranteeActive: a["guaranteeActive"] !== false,
         progress: [],
       };
       return { data: { ...d, clients: [client, ...d.clients] }, label: `Client: ${client.name}` };
@@ -75,8 +75,8 @@ function applyAction(d: CrmData, a: Action): { data: CrmData; label: string | nu
     case "add_task": {
       const task: Task = {
         id: uid(),
-        title: str(a.title) || "Follow up",
-        dueDate: date(a.dueDate),
+        title: str(a["title"]) || "Follow up",
+        dueDate: date(a["dueDate"]),
         done: false,
       };
       return { data: { ...d, tasks: [task, ...d.tasks] }, label: `Task: ${task.title}` };
@@ -84,18 +84,18 @@ function applyAction(d: CrmData, a: Action): { data: CrmData; label: string | nu
     case "add_content": {
       const entry: ContentEntry = {
         id: uid(),
-        kind: a.kind === "Partnership" ? "Partnership" : "Content",
-        platform: pick<Platform>(PLATFORMS, a.platform, "Other"),
-        date: date(a.date),
-        topic: str(a.topic),
-        link: str(a.link),
-        notes: str(a.notes),
+        kind: a["kind"] === "Partnership" ? "Partnership" : "Content",
+        platform: pick<Platform>(PLATFORMS, a["platform"], "Other"),
+        date: date(a["date"]),
+        topic: str(a["topic"]),
+        link: str(a["link"]),
+        notes: str(a["notes"]),
       };
       return { data: { ...d, content: [entry, ...d.content] }, label: `${entry.kind}: ${entry.topic || entry.platform}` };
     }
     case "update_lead_status": {
-      const name = str(a.name).toLowerCase();
-      const status = pick<Status>(STATUSES, a.status, "Contacted");
+      const name = str(a["name"]).toLowerCase();
+      const status = pick<Status>(STATUSES, a["status"], "Contacted");
       let hit = false;
       const leads = d.leads.map((l) => {
         if (!hit && l.name.toLowerCase().includes(name) && name) {
@@ -104,7 +104,7 @@ function applyAction(d: CrmData, a: Action): { data: CrmData; label: string | nu
         }
         return l;
       });
-      return { data: { ...d, leads }, label: hit ? `${str(a.name)} → ${status}` : null };
+      return { data: { ...d, leads }, label: hit ? `${str(a["name"])} → ${status}` : null };
     }
     default:
       return { data: d, label: null };
