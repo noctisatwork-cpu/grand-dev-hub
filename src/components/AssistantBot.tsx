@@ -152,17 +152,20 @@ export function AssistantBot() {
       const { reply, actions } = parse(res.raw);
       const labels: string[] = [];
       if (actions.length) {
+        let preview = data;
+        for (const a of actions) {
+          const out = applyAction(preview, a);
+          preview = out.data;
+          if (out.label) labels.push(out.label);
+        }
         update((d) => {
           let next = d;
-          for (const a of actions) {
-            const out = applyAction(next, a);
-            next = out.data;
-            if (out.label) labels.push(out.label);
-          }
+          for (const a of actions) next = applyAction(next, a).data;
           return next;
         });
         if (labels.length) toast.success(`Added ${labels.length} record${labels.length > 1 ? "s" : ""}`);
       }
+
       setMsgs((m) => [...m, { role: "bot", text: labels.length ? `${reply}\n• ${labels.join("\n• ")}` : reply }]);
     } catch (e) {
       setMsgs((m) => [...m, { role: "bot", text: (e as Error).message }]);
